@@ -56,7 +56,7 @@ While the model doesn’t explain all salary variation, it successfully captures
 ---
 
 ## Data Preprocessing Steps
-- **For descriptive analysis and visualizations **
+- **For descriptive analysis and visualizations**
 - Converted string types columns like experience_level, employment_type, and job_title
 - Dropped unnecessary columns (`salary`, `salary_currency`)
 - Converted string types
