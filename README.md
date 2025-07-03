@@ -84,16 +84,17 @@ While the model doesn’t explain all salary variation, it successfully captures
 
 ---
 
-## 🚧 Challenges Faced
+## Challenges Faced
 - High cardinality in `job_title` required frequency encoding
 - Skewed salary distribution handled using log transformation
 - Outlier handling dropped ~2,900 rows
 - Low R² score indicates the dataset has high variance not captured by current features
 - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
+!["CA" and "NL" contain very few rows] (/Users/vermouth/Documents/GitHub/ML-PayPredictor/problem.png )
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 - Python, Pandas, NumPy
 - Scikit-learn
 - Matplotlib, Seaborn
@@ -101,7 +102,7 @@ While the model doesn’t explain all salary variation, it successfully captures
 
 ---
 
-## 👤 Author
+## Author
 Pakkapol Satthapiti
 MSC of Data Science and AI | The University of Liverpool Feel free to connect!
 
