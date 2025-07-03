@@ -74,9 +74,11 @@ While the model doesn’t explain all salary variation, it successfully captures
 ## Visualizations
 - Remark: visualisations are based on data in the year of 2025
 1. Distribution of company size
-![Distribution of company size plot]()
+![Distribution of company size plot](/Users/vermouth/Documents/GitHub/ML-PayPredictor/company_dis.png)
 
 2. Salary distribution
+![Salary distribution plot](/Users/vermouth/Documents/GitHub/ML-PayPredictor/salary_distribution.png)
+
 3. Salary by experience level
 4. Average Salary by country 
 5. Heatmap: Salary VS Experience VS Company Size
@@ -106,6 +108,6 @@ While the model doesn’t explain all salary variation, it successfully captures
 ---
 
 ## Author
-Pakkapol Satthapiti
+Mr. Pakkapol Satthapiti
 MSC of Data Science and AI | The University of Liverpool Feel free to connect!
 
