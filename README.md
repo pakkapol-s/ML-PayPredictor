@@ -74,11 +74,8 @@ While the model doesn’t explain all salary variation, it successfully captures
 ## Visualizations
 - Remark: visualisations are based on data in the year of 2025
 1. Distribution of company size
-![Distribution of company size plot](/Users/vermouth/Documents/GitHub/ML-PayPredictor/company_dis.png)
-
+![Distribution of company size plot](/Users/vermouth/Documents/GitHub/ML-PayPredictor/salary_distribution.png)
 2. Salary distribution
-![Salary distribution plot](/Users/vermouth/Documents/GitHub/ML-PayPredictor/salary_distribution.png)
-
 3. Salary by experience level
 4. Average Salary by country 
 5. Heatmap: Salary VS Experience VS Company Size
@@ -94,8 +91,6 @@ While the model doesn’t explain all salary variation, it successfully captures
 - Outlier handling dropped ~2,900 rows
 - Low R² score indicates the dataset has high variance not captured by current features
 - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
-
-!["CA" and "NL" contain very few rows](/Users/vermouth/Documents/GitHub/ML-PayPredictor/problem.png )
 
 ---
 
