@@ -90,7 +90,8 @@ While the model doesn’t explain all salary variation, it successfully captures
 - Outlier handling dropped ~2,900 rows
 - Low R² score indicates the dataset has high variance not captured by current features
 - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
-!["CA" and "NL" contain very few rows] (/Users/vermouth/Documents/GitHub/ML-PayPredictor/problem.png )
+
+!["CA" and "NL" contain very few rows](/Users/vermouth/Documents/GitHub/ML-PayPredictor/problem.png )
 
 ---
 
