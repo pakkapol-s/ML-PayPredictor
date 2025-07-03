@@ -53,6 +53,10 @@ The final model was a Random Forest Regressor trained after extensive preprocess
 -**Mean Squared Error (MSE)**: ~3.56 billion
 -**R² Score**: ~0.24
 While the model doesn’t explain all salary variation, it successfully captures several key patterns. Further improvements could be achieved by incorporating more granular features such as education level, company reputation, or specific job functions.
+
+![sample of grid search code](grid_search.png)
+
+![Model's results](models_result.png)
 ---
 
 ## Data Preprocessing Steps
