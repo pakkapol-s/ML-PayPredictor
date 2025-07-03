@@ -76,13 +76,19 @@ While the model doesn’t explain all salary variation, it successfully captures
 1. Distribution of company size
 ![Distribution of company size plot](company_dis.png)
 2. Salary distribution
+![Salary distribution plot](salary_distribution.png)
 3. Salary by experience level
+![Salary by experience level plot](salary_by_experience_level.png)
 4. Average Salary by country 
+![Average Salary by country](average_salary_by_country.png)
 5. Heatmap: Salary VS Experience VS Company Size
+![Heatmap: Salary VS Experience VS Company Size](heatmap.png)
 6. Bar Plot of Top 10 Highest paid job titles
+![Top 10 of the highest paid job plot](top_10_highest paid_jobs_2025.png)
 7. Remote Work & Salary
+![Remote work & Salary plot](remote_work_salary.png)
 8. Salary Over Time by Experience Level
-
+![Salary over time plot](salary_trends.png)
 ---
 
 ## Challenges Faced
@@ -91,6 +97,7 @@ While the model doesn’t explain all salary variation, it successfully captures
 - Outlier handling dropped ~2,900 rows
 - Low R² score indicates the dataset has high variance not captured by current features
 - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
+![Sample rows of some countries that contain only few rows](problem.png)
 
 ---
 
