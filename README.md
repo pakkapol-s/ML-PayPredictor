@@ -74,6 +74,8 @@ While the model doesn’t explain all salary variation, it successfully captures
 ## Visualizations
 - Remark: visualisations are based on data in the year of 2025
 1. Distribution of company size
+![Distribution of company size plot]()
+
 2. Salary distribution
 3. Salary by experience level
 4. Average Salary by country 
