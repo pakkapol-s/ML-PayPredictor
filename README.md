@@ -84,7 +84,7 @@ While the model doesn’t explain all salary variation, it successfully captures
 5. Heatmap: Salary VS Experience VS Company Size
 ![Heatmap: Salary VS Experience VS Company Size](heatmap.png)
 6. Bar Plot of Top 10 Highest paid job titles
-![Top 10 of the highest paid job plot](top_10_highest paid_jobs_2025.png)
+![Top 10 highest job title](top_10_jobs)
 7. Remote Work & Salary
 ![Remote work & Salary plot](remote_work_salary.png)
 8. Salary Over Time by Experience Level
@@ -111,5 +111,4 @@ While the model doesn’t explain all salary variation, it successfully captures
 
 ## Author
 Mr. Pakkapol Satthapiti
-MSC of Data Science and AI | The University of Liverpool Feel free to connect!
-
+MSC of Data Science and AI | The University of Liverpool | Feel free to connect!
