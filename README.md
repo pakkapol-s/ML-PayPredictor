@@ -1,7 +1,7 @@
 #  SalaryScope: Predicting Data Science Compensation with Machine Learning
 
 ## Goal
-To analyze data science salary trends and predict salaries using a machine learning model: Random Forest Regressor, providing insights for job seekers and employers based on role, experience, company size, and working conditions.
+To analyze data science salary trends and predict salaries using a machine learning model: "Random Forest Regressor, to provide insights for job seekers and employers based on factors like role, experience, company size, and working conditions.".
 
 ---
 
@@ -10,7 +10,7 @@ The global demand for data professionals continues to surge as industries embrac
 
 This project uses a real-world dataset with over 59,000 entries (2020–2025), detailing job titles, experience levels, company size, employment type, and salary data. The aim is to uncover key salary trends and build a machine learning model to predict salaries accurately.
 
-The dataset was thoroughly cleaned, transformed, and engineered. This includes removing outliers, one-hot encoding categorical variables, frequency encoding job titles, changing data types, and creating new features like `is_fully_remote` and `is_domestic`.
+The dataset was thoroughly cleaned, transformed, and engineered. This includes removing outliers, one-hot encoding categorical variables, semantically grouping job titles, changing data types, and creating new features like `is_fully_remote` and `is_domestic`.
 
 ---
 
@@ -44,7 +44,6 @@ The dataset was thoroughly cleaned, transformed, and engineered. This includes r
 - **For Employers**: Consider offering fully remote options. Your data suggests that 100% remote roles are often linked with higher salaries, potentially signaling companies’ willingness to invest more in global talent for flexible arrangements.
 - **For Global Talent**: Be strategic about geographic positioning. Jobs in the US consistently offer the highest salaries, followed by the UK. If relocation or remote contracting is an option, it could lead to substantial income boosts.
 - **For Entry-Level Candidates**: Surprisingly, small companies appear to offer the highest average salary for entry-level positions among all company sizes shown for EN roles. 
-—
 
 ---
 
@@ -78,50 +77,33 @@ The consistently low R2 scores across all models (ranging from 0.09 to 0.23) str
 
 ![sample of grid search code](grid_search.png)
 
-![Model's results](models_result.png)
-
 ---
 
 ## Data Preprocessing Steps
-- **For descriptive analysis and visualizations**
-- Converted string types columns like experience_level, employment_type, and job_title
-- Dropped unnecessary columns (`salary`, `salary_currency`)
-- Converted string types
-- Filtered rows for USD only
-- Removed duplicates and outliers
 
-- **Machine Learning Prediction**
-The raw dataset underwent comprehensive preprocessing to ensure data quality, consistency, and suitability for machine learning model training. These steps were meticulously applied to prepare features for predicting `salary_in_usd`.
+The raw dataset underwent comprehensive preprocessing to ensure data quality, consistency, and suitability for both exploratory analysis and machine learning model training. These steps were meticulously applied to prepare features for predicting `salary_in_usd`.
 
-1.  **Initial Data Loading & Type Conversion:**
+1.  **Initial Data Loading & Cleaning:**
     * The dataset was loaded with explicit data types assigned to enhance memory efficiency and ensure correct handling of categorical and string fields (e.g., `experience_level`, `job_title`, `company_size` as `category` or `string`).
-
-2.  **Currency Filtering and Cleaning:**
-    * The `salary` column (raw currency string) was initially dropped.
-    * The `salary_currency` column was standardized by stripping whitespace and converting to uppercase.
-    * Only records where `salary_currency` was 'USD' were retained, ensuring a consistent monetary unit for salary prediction.
-    * The `salary_currency` column was then removed as it became redundant after filtering.
-
-3.  **Duplicate Row Removal:**
+    * The raw `salary` column (which likely contained non-numeric currency strings) was dropped.
+    * The `salary_currency` column was standardized (stripped whitespace, converted to uppercase), and rows were filtered to include **only USD entries** to ensure consistent monetary units. The `salary_currency` column was then removed as it became redundant after filtering.
     * Duplicate rows across the entire dataset were identified and removed to ensure uniqueness and prevent bias.
 
-4.  **Feature Engineering (Binary Indicators):**
-    * **`is_fully_remote`:** A new binary feature was created, indicating whether a job is fully remote (`remote_ratio == 100`). This helps capture the impact of remote work arrangements.
-    * **`is_domestic`:** Another binary feature was derived to indicate if the employee's residence is in the same country as the company's location, potentially reflecting in-country vs. international compensation dynamics.
+2.  **Feature Engineering:**
+    * **Binary Indicators:** Two new binary features were created:
+        * `is_fully_remote`: Indicates whether a job is fully remote (`remote_ratio == 100`).
+        * `is_domestic`: Determines if the employee's residence is in the same country as the company's location, potentially reflecting in-country vs. international compensation dynamics.
+    * **Advanced Job Title Grouping:** A custom function (`assign_job_category`) was implemented to group granular `job_title` entries into broader, more meaningful categories (e.g., "Data Scientist (Senior/Lead)", "ML/AI Engineer", "Data Analyst/BI"). This significantly reduced the cardinality of the `job_title` column, improving manageability and interpretability. Unmatched titles were grouped into an 'Other/Uncategorized' category.
 
-5.  **Advanced Job Title Grouping:**
-    * A custom function (`assign_job_category`) was implemented to group granular `job_title` entries into broader, more meaningful categories (e.g., "Data Scientist (Senior/Lead)", "ML/AI Engineer", "Data Analyst/BI", "Leadership / Manager"). This significantly reduced the cardinality of the `job_title` column, making it more manageable for modeling and improving interpretability. Unmatched titles were grouped into an 'Other/Uncategorized' category.
+3.  **Categorical Feature Encoding:**
+    * Key categorical features, including the newly created `job_category` (`experience_level`, `employment_type`, `company_size`, `employee_residence`, `company_location`, `job_category`), were transformed using **One-Hot Encoding (OHE)**. The `drop='first'` strategy was applied to prevent multicollinearity among the dummy variables. The original `job_title` column was dropped after its categories were mapped to `job_category`.
 
-6.  **Categorical Feature Encoding:**
-    * Selected categorical features, including the newly created `job_category` (`experience_level`, `employment_type`, `company_size`, `employee_residence`, `company_location`, `job_category`), were transformed using **One-Hot Encoding (OHE)**. The `drop='first'` strategy was applied to prevent multicollinearity among the dummy variables.
-    * The original `job_title` column was dropped after its categories were mapped to `job_category`.
+4.  **Target Variable Transformation:**
+    * The `salary_in_usd` target variable was **log-transformed using `np.log1p()`** to `log_salary`. This common practice helps to normalize skewed distributions, reduce the impact of outliers, and often improves the performance of regression models. The original `salary_in_usd` column was then dropped, leaving `log_salary` as the sole target.
 
-7.  **Target Variable Transformation:**
-    * The `salary_in_usd` target variable was **log-transformed using `np.log1p()`** to `log_salary`. This common practice helps to normalize skewed distributions, reduce the impact of outliers, and often improves the performance of regression models.
-    * The original `salary_in_usd` column was then dropped, leaving `log_salary` as the sole target.
-
-8.  **Final Duplicate Check:**
+5.  **Final Data Refinement:**
     * A final check for duplicate rows was performed after all transformations to ensure no unintended duplicates were introduced during feature engineering.
+    * Highly correlated features were reviewed (e.g., using a correlation heatmap) to manage multicollinearity.
 
 These steps systematically cleaned, transformed, and enriched the raw data, creating a robust feature set ready for training machine learning models to predict data science salaries.
 
@@ -166,8 +148,10 @@ This project involved navigating common data challenges to build a robust salary
 4.  **Limited Predictive Power (Low R-squared):**
     * **Challenge:** Despite thorough preprocessing and model tuning, the models achieved relatively low R-squared scores (e.g., max ~0.23), indicating limited explanatory power.
     * **Solution:** The project optimized models within data limitations. The results suggest that more granular data (e.g., company specifics, precise location cost-of-living, individual performance) is needed for substantial improvements in salary prediction accuracy.
-5. **Missing information**
-    - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
+5.  **Sparse Data in Geographic Regions:**
+    * **Challenge:** Some countries (e.g., "CA" with one row, "NL" with two rows) had extremely limited data, making analysis or reliable predictions for these specific regions challenging.
+    * **Solution:** While these sparse entries were retained for overall dataset completeness, insights and recommendations primarily focused on regions with sufficient data density (e.g., US, UK, countries with larger sample sizes). This limitation was acknowledged during regional analysis to avoid drawing unsubstantiated conclusions.
+
     ![Sample rows of some countries that contain only few rows](problem.png)
 
 ---
