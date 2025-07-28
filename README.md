@@ -46,17 +46,40 @@ The dataset was thoroughly cleaned, transformed, and engineered. This includes r
 - **For Entry-Level Candidates**: Surprisingly, small companies appear to offer the highest average salary for entry-level positions among all company sizes shown for EN roles. 
 —
 
-## Model Results and Summary
+---
 
-The final model was a Random Forest Regressor trained after extensive preprocessing and feature engineering. A log transformation was applied to the salary target variable to improve prediction stability.
-- **Mean Absolute Error (MAE)**: ~45,800.06 USD
--**Mean Squared Error (MSE)**: ~3.56 billion
--**R² Score**: ~0.24
-While the model doesn’t explain all salary variation, it successfully captures several key patterns. Further improvements could be achieved by incorporating more granular features such as education level, company reputation, or specific job functions.
+## Machine Learning Model Evaluation
+
+This project utilized various regression algorithms to predict `salary_in_usd` based on key features. Each model was fine-tuned and evaluated on a hold-out test set to assess its generalization capabilities and predictive accuracy.
+
+### Performance Summary
+
+| Model                                      | Mean Absolute Error (MAE) | Mean Squared Error (MSE) | Root Mean Squared Error (RMSE) | R2 Score |
+| :----------------------------------------- | :------------------------ | :----------------------- | :----------------------------- | :------- |
+| Linear Regression (Baseline)               | 50,775.03                 | 4,596,321,126.57         | 67,796.17                      | 0.0942   |
+| Random Forest Regressor                    | 46,597.14                 | 3,885,583,443.55         | 62,334.45                      | 0.2342   |
+| Random Forest Regressor (with major data preprocessing change) | 49,347.94                 | 4,394,924,197.98         | 66,294.22                      | 0.1730   |
+
+### Key Findings & Discussion:
+
+A significant observation throughout this project was the **limited predictive power** of the models in accurately forecasting data science salaries.
+
+* **Baseline Performance:** The Linear Regression model, serving as a baseline, yielded an R2 score of approximately 0.0942. This indicates that it explains less than 10% of the variance in salaries, performing only slightly better than a naive model that always predicts the mean salary.
+* **Random Forest Improvement:** The initial Random Forest Regressor showed an improvement over the baseline, achieving an R2 score of 0.2342. While better, this still suggests that the model explains only about 23% of the variance in salaries, leaving a large portion unexplained. Its MAE of approximately $46,597 means, on average, predictions were off by about this amount.
+* **Impact of Preprocessing Changes:** Interestingly, a subsequent major change in the data preprocessing step for the Random Forest Regressor led to a decrease in performance, with the R2 score dropping to 0.1730. This highlights the critical sensitivity of model performance to preprocessing choices and the complexity of extracting robust signals from the dataset. It suggests that the "major change" might have removed or distorted valuable information, or introduced new noise.
+
+The consistently low R2 scores across all models (ranging from 0.09 to 0.23) strongly suggest that the current dataset, even with the engineered features and model tuning, lacks sufficiently strong predictive signals to accurately determine data science salaries. These results indicate that salary determination is influenced by many factors not present in this dataset. Further improvements would likely necessitate incorporating more granular and impactful data points such as:
+
+* **Specific Company Data:** Company-specific factors (e.g., funding, industry, private vs. public, Glassdoor ratings).
+* **Detailed Job Responsibilities:** More nuanced descriptions of daily tasks and required skill sets.
+* **Geographic Cost of Living:** More precise location data beyond just country, reflecting local economic conditions.
+* **Negotiation Skills/Individual Performance:** Factors related to individual aptitude and negotiation that are inherently hard to quantify.
+* **Economic Climate at Time of Hiring:** Broader economic indicators that influence salary offers.
 
 ![sample of grid search code](grid_search.png)
 
 ![Model's results](models_result.png)
+
 ---
 
 ## Data Preprocessing Steps
@@ -67,11 +90,40 @@ While the model doesn’t explain all salary variation, it successfully captures
 - Filtered rows for USD only
 - Removed duplicates and outliers
 
-- **For the Random Forest Regressor**
-- Engineered features: `is_fully_remote`, `is_domestic`
-- One-hot encoded `experience_level`, `employment_type`, `company_size`, `employee_residence`, `company_location`
-- Frequency encoded `job_title`
-- Applied log transformation to `salary_in_usd`
+- **Machine Learning Prediction**
+The raw dataset underwent comprehensive preprocessing to ensure data quality, consistency, and suitability for machine learning model training. These steps were meticulously applied to prepare features for predicting `salary_in_usd`.
+
+1.  **Initial Data Loading & Type Conversion:**
+    * The dataset was loaded with explicit data types assigned to enhance memory efficiency and ensure correct handling of categorical and string fields (e.g., `experience_level`, `job_title`, `company_size` as `category` or `string`).
+
+2.  **Currency Filtering and Cleaning:**
+    * The `salary` column (raw currency string) was initially dropped.
+    * The `salary_currency` column was standardized by stripping whitespace and converting to uppercase.
+    * Only records where `salary_currency` was 'USD' were retained, ensuring a consistent monetary unit for salary prediction.
+    * The `salary_currency` column was then removed as it became redundant after filtering.
+
+3.  **Duplicate Row Removal:**
+    * Duplicate rows across the entire dataset were identified and removed to ensure uniqueness and prevent bias.
+
+4.  **Feature Engineering (Binary Indicators):**
+    * **`is_fully_remote`:** A new binary feature was created, indicating whether a job is fully remote (`remote_ratio == 100`). This helps capture the impact of remote work arrangements.
+    * **`is_domestic`:** Another binary feature was derived to indicate if the employee's residence is in the same country as the company's location, potentially reflecting in-country vs. international compensation dynamics.
+
+5.  **Advanced Job Title Grouping:**
+    * A custom function (`assign_job_category`) was implemented to group granular `job_title` entries into broader, more meaningful categories (e.g., "Data Scientist (Senior/Lead)", "ML/AI Engineer", "Data Analyst/BI", "Leadership / Manager"). This significantly reduced the cardinality of the `job_title` column, making it more manageable for modeling and improving interpretability. Unmatched titles were grouped into an 'Other/Uncategorized' category.
+
+6.  **Categorical Feature Encoding:**
+    * Selected categorical features, including the newly created `job_category` (`experience_level`, `employment_type`, `company_size`, `employee_residence`, `company_location`, `job_category`), were transformed using **One-Hot Encoding (OHE)**. The `drop='first'` strategy was applied to prevent multicollinearity among the dummy variables.
+    * The original `job_title` column was dropped after its categories were mapped to `job_category`.
+
+7.  **Target Variable Transformation:**
+    * The `salary_in_usd` target variable was **log-transformed using `np.log1p()`** to `log_salary`. This common practice helps to normalize skewed distributions, reduce the impact of outliers, and often improves the performance of regression models.
+    * The original `salary_in_usd` column was then dropped, leaving `log_salary` as the sole target.
+
+8.  **Final Duplicate Check:**
+    * A final check for duplicate rows was performed after all transformations to ensure no unintended duplicates were introduced during feature engineering.
+
+These steps systematically cleaned, transformed, and enriched the raw data, creating a robust feature set ready for training machine learning models to predict data science salaries.
 
 ---
 
@@ -95,21 +147,72 @@ While the model doesn’t explain all salary variation, it successfully captures
 ![Salary over time plot](salary_trends.png)
 ---
 
-## Challenges Faced
-- High cardinality in `job_title` required frequency encoding
-- Skewed salary distribution handled using log transformation
-- Outlier handling dropped ~2,900 rows
-- Low R² score indicates the dataset has high variance not captured by current features
-- missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
-![Sample rows of some countries that contain only few rows](problem.png)
+## **Challenges & Solutions**
+
+This project involved navigating common data challenges to build a robust salary prediction model:
+
+1.  **Managing High-Cardinality Categorical Data:**
+    * **Challenge:** Features like `job_title`, `employee_residence`, and `company_location` contained a large number of unique values, which can complicate modeling.
+    * **Solution:** `Job titles` were semantically grouped into broader categories. Other high-cardinality categorical features were processed using One-Hot Encoding.
+
+2.  **Handling Skewed Data and Outliers:**
+    * **Challenge:** Salary data is often highly skewed with significant outliers, which can negatively impact model performance.
+    * **Solution:** The `salary_in_usd` target variable was **log-transformed** (`np.log1p`) to normalize its distribution and reduce the influence of extreme values.
+
+3.  **Addressing Multicollinearity:**
+    * **Challenge:** Highly correlated features can lead to unstable models and make it difficult to interpret feature importance.
+    * **Solution:** Multicollinearity was assessed using **Variance Inflation Factor (VIF)** and correlation analysis, and redundant features were strategically removed.
+
+4.  **Limited Predictive Power (Low R-squared):**
+    * **Challenge:** Despite thorough preprocessing and model tuning, the models achieved relatively low R-squared scores (e.g., max ~0.23), indicating limited explanatory power.
+    * **Solution:** The project optimized models within data limitations. The results suggest that more granular data (e.g., company specifics, precise location cost-of-living, individual performance) is needed for substantial improvements in salary prediction accuracy.
+5. **Missing information**
+    - missing information in some countries like "CA" - contains only one row, "NL" - contains only 2 rows.
+    ![Sample rows of some countries that contain only few rows](problem.png)
+
+---
+
+## Dashboard Summary 
+
+
+This interactive Tableau Public dashboard provides a comprehensive overview of data science salaries for the year 2025, allowing users to explore salary trends and distributions across various job roles, experience levels, company sizes, and work arrangements.
+
+Key features and interactive elements include:
+
+* **Overall Salary Key Performance Indicators (KPIs):** Displays crucial metrics at the top, including the total number of company locations, average salary (USD), minimum salary (USD), and maximum salary (USD).
+* **Job Role Filter Pane:** An interactive filter pane on the left allows users to select and filter data by specific job roles (e.g., Architect, Business Intelligence, Data Analyst, Data Scientist, ML Engineer, Researcher, etc.).
+* **Salary Trend by Year:** A line chart visualizes the average salary trend over multiple years (2020-2025).
+* **Salary by Experience Level:** A bar chart illustrates the average salary based on different experience levels (e.g., Expert, Senior, Middle, Entry).
+* **Geographic Distribution Map:** A world map highlights company locations, enabling visual exploration of salary data by country.
+* **Salary by Company Size:** A bar chart displays the average salary across various company sizes (Large, Medium, Small).
+* **Employment Type Distribution:** A pie chart presents the distribution of employment types (e.g., Full-time, Part-time, Contract).
+* **Remote Work Ratio Distribution:** A pie chart visualizes the distribution of remote work arrangements (e.g., Remote, Hybrid, Onsite).
+
+This dashboard offers a dynamic way to analyze and compare various factors influencing data science salaries in 2025, providing valuable insights for professionals, recruiters, and companies alike.
+
+Dasboard link: https://public.tableau.com/views/DS_salary_17536669877080/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+
+1. Sample of the dashboard
+![Sample of the dashboard](Dashboard_sample_1.png)
+
+2. Sample of the dashboard with interactive elements
+![Sample o the dashboard with interactive elements](sample_dash_3.png)
 
 ---
 
 ## Technologies Used
-- Python, Pandas, NumPy
-- Scikit-learn
-- Matplotlib, Seaborn
-- Jupyter / Kaggle Notebook
+
+* **Programming Language:** Python
+* **Data Manipulation & Analysis:** Pandas, NumPy
+* **Statistical Modeling & Preprocessing:**
+    * Scikit-learn (for data splitting, scaling, encoding, model selection, and evaluation metrics)
+    * Statsmodels (specifically for Variance Inflation Factor (VIF) analysis to address multicollinearity)
+* **Machine Learning Models:**
+    * Linear Regression (for baseline modeling)
+    * Random Forest Regressor
+* **Data Visualization:** Matplotlib, Seaborn
+* **Business Intelligence & Interactive Dashboards:** Tableau, Tableau Public
+* **Development Environment:** Jupyter Notebook / Kaggle Notebook 
 
 ---
 
